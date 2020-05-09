@@ -1,18 +1,23 @@
 import React, { ReactElement, useState } from 'react';
 import useEventListener from '@srmagura/use-event-listener';
 
-import { MathOperator, mathOperatorToString, applyOperator } from './mathOperator';
+import { LevelWithItems } from './LevelWithItems';
 
 import { Digit } from './Digit';
 import { Operator } from './Operator';
-import { LevelWithItems } from './LevelWithItems';
+
+import { MathOperator, mathOperatorToString, applyOperator } from './mathOperator';
 
 const maxInputLength = 13;
 
-const initialInputState = '0';
+const baseInputStateValue = '0';
 
-export function Calculator(): ReactElement<unknown> {
-  const [input, setInput] = useState(initialInputState);
+interface CalculatorProps {
+  initialInput: string;
+}
+
+export function Calculator({ initialInput }: CalculatorProps): ReactElement<unknown> {
+  const [input, setInput] = useState(initialInput);
   const [operator, setOperator] = useState<MathOperator>();
   const [prevInput, setPrevInput] = useState<string>();
 
@@ -40,7 +45,7 @@ export function Calculator(): ReactElement<unknown> {
     if (operator !== undefined && prevInput === undefined) {
       setPrevInput(input);
       setInput(digit.toString());
-    } else if (input === initialInputState) {
+    } else if (input === baseInputStateValue) {
       setInput(digit.toString());
     } else {
       setInput(input + digit.toString());
@@ -63,7 +68,7 @@ export function Calculator(): ReactElement<unknown> {
           const substr = input.substring(1);
 
           if (substr === '') {
-            newInput = initialInputState;
+            newInput = baseInputStateValue;
           } else {
             newInput = substr;
           }
@@ -95,7 +100,7 @@ export function Calculator(): ReactElement<unknown> {
   }
 
   function clear(): void {
-    setInput(initialInputState);
+    setInput(baseInputStateValue);
     setOperator(undefined);
     setPrevInput(undefined);
   }
@@ -107,7 +112,7 @@ export function Calculator(): ReactElement<unknown> {
         const len = input.length;
 
         if (len <= 1) {
-          setInput(initialInputState);
+          setInput(baseInputStateValue);
         } else {
           setInput(input.substring(0, len - 1));
         }
