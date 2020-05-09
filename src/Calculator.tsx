@@ -2,16 +2,14 @@ import React, { ReactElement, useState } from 'react';
 import useEventListener from '@srmagura/use-event-listener';
 
 import { MathOperator, mathOperatorToString, applyOperator } from './mathOperator';
-import { arrayGroup } from './arrayGroup';
 
 import { Digit } from './Digit';
 import { Operator } from './Operator';
+import { LevelWithItems } from './LevelWithItems';
 
-const maxInputLength = 15;
+const maxInputLength = 13;
 
 const initialInputState = '0';
-
-const calculatorDigits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
 export function Calculator(): ReactElement<unknown> {
   const [input, setInput] = useState(initialInputState);
@@ -24,7 +22,7 @@ export function Calculator(): ReactElement<unknown> {
     if (operator !== undefined && prevInput !== undefined && !Number.isNaN(inputNum)) {
       const prevInputNum = parseFloat(prevInput);
 
-      if (!Number.isNaN(prevInputNum)) {
+      if (!Number.isNaN(prevInputNum) && Number.isFinite(prevInputNum)) {
         const result = applyOperator(operator, prevInputNum, inputNum);
 
         setInput(result.toString());
@@ -40,10 +38,8 @@ export function Calculator(): ReactElement<unknown> {
     }
 
     if (operator !== undefined && prevInput === undefined) {
-      const inputTemp = input;
-
+      setPrevInput(input);
       setInput(digit.toString());
-      setPrevInput(inputTemp);
     } else if (input === initialInputState) {
       setInput(digit.toString());
     } else {
@@ -58,9 +54,8 @@ export function Calculator(): ReactElement<unknown> {
       }
     } else if (prevInput === undefined || Number.isNaN(parseFloat(input))) {
       if (inputOperator === MathOperator.Subtract) {
-        const tempInput = input;
+        setPrevInput(input);
         setInput(input.includes('-') ? '0' : '-');
-        setPrevInput(tempInput);
       } else if (inputOperator === MathOperator.Add) {
         let newInput: string;
 
@@ -87,7 +82,10 @@ export function Calculator(): ReactElement<unknown> {
   }
 
   function decimalInput(): void {
-    if (!input.includes('.')) {
+    if (operator !== undefined && prevInput === undefined) {
+      setPrevInput(input);
+      setInput('0.');
+    } else if (!input.includes('.')) {
       setInput(input + '.');
     }
   }
@@ -122,21 +120,6 @@ export function Calculator(): ReactElement<unknown> {
     document,
   );
 
-  // RENDER LOGIC
-
-  const digits = arrayGroup(calculatorDigits, 3).map((digitGroup, index) => {
-    const row = digitGroup.map((i) => (
-      <div className="col-4" key={i}>
-        <Digit digit={i} digitInput={digitInput} />
-      </div>
-    ));
-    return (
-      <div className="row" key={index}>
-        {row}
-      </div>
-    );
-  });
-
   let displayEquation: string;
 
   if (prevInput === undefined) {
@@ -152,39 +135,55 @@ export function Calculator(): ReactElement<unknown> {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col">
-          <div id="display" className="p-3 border border-dark">
-            {input}
-          </div>
-        </div>
-        <div className="col">
-          <div className="p-3 border border-dark">{displayEquation}</div>
+    <div className="box" id="calculator">
+      <div className="field">
+        <div className="control">
+          <input id="display" value={input} type="text" className="input is-large" readOnly />
         </div>
       </div>
-      <div className="row">
-        <div className="col">
-          <div onClick={clear} id="clear" className="p-3 border border-dark">
+      <div className="level">
+        <div className="level-left" />
+        <div className="level-right">
+          <div className="level-item">
+            <h5 className="subtitle">{displayEquation}</h5>
+          </div>
+        </div>
+      </div>
+      <div className="level">
+        <div className="level-item">
+          <button onClick={clear} id="clear" className="button">
             AC
-          </div>
-        </div>
-        <Operator mathOperator={MathOperator.Add} operatorInput={operatorInput} />
-        <Operator mathOperator={MathOperator.Subtract} operatorInput={operatorInput} />
-        <Operator mathOperator={MathOperator.Multiply} operatorInput={operatorInput} />
-        <Operator mathOperator={MathOperator.Divide} operatorInput={operatorInput} />
-        <div className="col">
-          <div className="p-3 border border-dark" onClick={decimalInput} id="decimal">
-            .
-          </div>
-        </div>
-        <div className="col">
-          <div className="p-3 border border-dark" onClick={handleClickEvaluate} id="equals">
-            =
-          </div>
+          </button>
         </div>
       </div>
-      {digits}
+      <LevelWithItems>
+        <Digit digit={1} digitInput={digitInput} />
+        <Digit digit={2} digitInput={digitInput} />
+        <Digit digit={3} digitInput={digitInput} />
+        <Operator mathOperator={MathOperator.Add} operatorInput={operatorInput} />
+      </LevelWithItems>
+      <LevelWithItems>
+        <Digit digit={4} digitInput={digitInput} />
+        <Digit digit={5} digitInput={digitInput} />
+        <Digit digit={6} digitInput={digitInput} />
+        <Operator mathOperator={MathOperator.Subtract} operatorInput={operatorInput} />
+      </LevelWithItems>
+      <LevelWithItems>
+        <Digit digit={7} digitInput={digitInput} />
+        <Digit digit={8} digitInput={digitInput} />
+        <Digit digit={9} digitInput={digitInput} />
+        <Operator mathOperator={MathOperator.Multiply} operatorInput={operatorInput} />
+      </LevelWithItems>
+      <LevelWithItems>
+        <Digit digit={0} digitInput={digitInput} />
+        <button className="button" onClick={decimalInput} id="decimal">
+          .
+        </button>
+        <button className="button is-info" onClick={handleClickEvaluate} id="equals">
+          =
+        </button>
+        <Operator mathOperator={MathOperator.Divide} operatorInput={operatorInput} />
+      </LevelWithItems>
     </div>
   );
 }

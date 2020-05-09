@@ -24,10 +24,8 @@ export function Operator({ mathOperator, operatorInput }: OperatorProps): ReactE
   );
 
   return (
-    <div className="col">
-      <div onClick={handleOperatorInput} id={mathOperatorToId(mathOperator)} className="digit p-3 border border-dark">
-        {mathOperatorToString(mathOperator)}
-      </div>
-    </div>
+    <button onClick={handleOperatorInput} id={mathOperatorToId(mathOperator)} className="button">
+      {mathOperatorToString(mathOperator)}
+    </button>
   );
 }

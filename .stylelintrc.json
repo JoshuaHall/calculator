@@ -3,6 +3,7 @@
   "plugins": ["stylelint-prettier"],
   "rules": {
     "prettier/prettier": [true, { "singleQuote": true, "tabWidth": 2 }],
-    "color-named": null
+    "color-named": null,
+    "selector-max-id": null
   }
 }

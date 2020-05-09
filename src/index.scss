@@ -1,0 +1,37 @@
+@mixin always-flex {
+  display: flex !important;
+}
+
+.level {
+  @include always-flex;
+}
+
+.level-left {
+  @include always-flex;
+}
+
+.level-right {
+  @include always-flex;
+  margin-top: 0 !important;
+}
+
+.level-item {
+  flex-grow: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.level-left .level-item:not(:last-child),
+.level-right .level-item:not(:last-child) {
+  margin-right: 0.75rem !important;
+}
+
+#calculator {
+  width: 300px;
+
+  .button {
+    $calculator-button-square-side-length: 3rem;
+
+    height: $calculator-button-square-side-length;
+    width: $calculator-button-square-side-length;
+  }
+}

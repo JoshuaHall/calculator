@@ -50,8 +50,8 @@ export function Digit({ digit, digitInput }: DigitProps): ReactElement<DigitProp
   );
 
   return (
-    <div onClick={handleDigitInput} id={digitToId(digit)} className="digit p-3 border border-dark">
+    <button onClick={handleDigitInput} id={digitToId(digit)} className="button">
       {digit}
-    </div>
+    </button>
   );
 }
