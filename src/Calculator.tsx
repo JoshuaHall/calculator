@@ -105,25 +105,21 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<unkn
     setPrevInput(undefined);
   }
 
-  useEventListener(
-    'keydown',
-    ({ key }: KeyboardEvent) => {
-      if (key === 'Backspace' || key === 'Delete') {
-        const len = input.length;
+  useEventListener('keydown', ({ key }: KeyboardEvent) => {
+    if (key === 'Backspace' || key === 'Delete') {
+      const len = input.length;
 
-        if (len <= 1) {
-          setInput(baseInputStateValue);
-        } else {
-          setInput(input.substring(0, len - 1));
-        }
-      } else if (key === '=' || key === 'Enter') {
-        evaluate();
-      } else if (key === '.') {
-        decimalInput();
+      if (len <= 1) {
+        setInput(baseInputStateValue);
+      } else {
+        setInput(input.substring(0, len - 1));
       }
-    },
-    document,
-  );
+    } else if (key === '=' || key === 'Enter') {
+      evaluate();
+    } else if (key === '.') {
+      decimalInput();
+    }
+  });
 
   let displayEquation: string;
 

@@ -39,15 +39,11 @@ export function Digit({ digit, digitInput }: DigitProps): ReactElement<DigitProp
     digitInput(digit);
   }
 
-  useEventListener(
-    'keydown',
-    ({ key }: KeyboardEvent) => {
-      if (key === digit.toString()) {
-        handleDigitInput();
-      }
-    },
-    document,
-  );
+  useEventListener('keydown', ({ key }: KeyboardEvent) => {
+    if (key === digit.toString()) {
+      handleDigitInput();
+    }
+  });
 
   return (
     <button onClick={handleDigitInput} id={digitToId(digit)} className="button">

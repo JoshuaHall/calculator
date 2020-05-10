@@ -13,15 +13,11 @@ export function Operator({ mathOperator, operatorInput }: OperatorProps): ReactE
     operatorInput(mathOperator);
   }
 
-  useEventListener(
-    'keydown',
-    ({ key }: KeyboardEvent) => {
-      if (key === mathOperatorToKeyString(mathOperator)) {
-        handleOperatorInput();
-      }
-    },
-    document,
-  );
+  useEventListener('keydown', ({ key }: KeyboardEvent) => {
+    if (key === mathOperatorToKeyString(mathOperator)) {
+      handleOperatorInput();
+    }
+  });
 
   return (
     <button onClick={handleOperatorInput} id={mathOperatorToId(mathOperator)} className="button">
