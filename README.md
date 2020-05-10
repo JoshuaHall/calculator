@@ -1,3 +1,7 @@
+# Calculator
+
+![My calculator I made using React](/../screenshots/MyCalculator.png?raw=true)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

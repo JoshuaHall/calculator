@@ -10,13 +10,17 @@
   "dependencies": {
     "@srmagura/use-event-listener": "^0.2.1",
     "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
+    "@types/react-dom": "^16.9.7",
     "bulma": "^0.8.2",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+<<<<<<< HEAD
     "typescript": "^3.8.3",
+=======
+    "typescript": "~3.8.3",
+>>>>>>> acef45f7e63e9101d7cfa64967367eba8b3a304b
     "yarn": "^1.22.4"
   },
   "scripts": {
