@@ -5,9 +5,9 @@ interface LevelProps {
 }
 
 // Takes its children and puts each one of them into a level-item inside of a level
-export function LevelWithItems({ children }: LevelProps): ReactElement<LevelProps> {
+export function MobileLevelWithItems({ children }: LevelProps): ReactElement<LevelProps> {
   return (
-    <div className="level">
+    <div className="level is-mobile">
       {React.Children.map(children, (child) => (
         <div className="level-item">{child}</div>
       ))}

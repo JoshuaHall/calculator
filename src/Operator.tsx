@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+
 import useEventListener from '@srmagura/use-event-listener';
 
 import { MathOperator, mathOperatorToString, mathOperatorToId, mathOperatorToKeyString } from './mathOperator';
@@ -13,11 +14,15 @@ export function Operator({ mathOperator, operatorInput }: OperatorProps): ReactE
     operatorInput(mathOperator);
   }
 
-  useEventListener('keydown', ({ key }: KeyboardEvent) => {
-    if (key === mathOperatorToKeyString(mathOperator)) {
+  function handleKeydown(event: KeyboardEvent): void {
+    event.preventDefault();
+
+    if (event.key === mathOperatorToKeyString(mathOperator)) {
       handleOperatorInput();
     }
-  });
+  }
+
+  useEventListener('keydown', handleKeydown);
 
   return (
     <button onClick={handleOperatorInput} id={mathOperatorToId(mathOperator)} className="button">

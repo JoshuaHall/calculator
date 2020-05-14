@@ -1,17 +1,4 @@
-@mixin always-flex {
-  display: flex !important;
-}
-
-.level {
-  @include always-flex;
-}
-
-.level-left {
-  @include always-flex;
-}
-
 .level-right {
-  @include always-flex;
   margin-top: 0 !important;
 }
 
@@ -29,9 +16,9 @@
   width: 300px;
 
   .button {
-    $calculator-button-square-side-length: 3rem;
+    $calculator-button-side-length: 3rem;
 
-    height: $calculator-button-square-side-length;
-    width: $calculator-button-square-side-length;
+    height: $calculator-button-side-length;
+    width: $calculator-button-side-length;
   }
 }
