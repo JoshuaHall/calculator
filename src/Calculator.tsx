@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import useEventListener from '@srmagura/use-event-listener';
 
-import { LevelWithItems } from './LevelWithItems';
+import { MobileLevelWithItems } from './MobileLevelWithItems';
 
 import { Digit } from './Digit';
 import { Operator } from './Operator';
@@ -16,7 +16,7 @@ interface CalculatorProps {
   initialInput: string;
 }
 
-export function Calculator({ initialInput }: CalculatorProps): ReactElement<unknown> {
+export function Calculator({ initialInput }: CalculatorProps): ReactElement<CalculatorProps> {
   const [input, setInput] = useState(initialInput);
   const [operator, setOperator] = useState<MathOperator>();
   const [prevInput, setPrevInput] = useState<string>();
@@ -105,7 +105,11 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<unkn
     setPrevInput(undefined);
   }
 
-  useEventListener('keydown', ({ key }: KeyboardEvent) => {
+  function handleKeydown(event: KeyboardEvent): void {
+    event.preventDefault();
+
+    const { key } = event;
+
     if (key === 'Backspace' || key === 'Delete') {
       const len = input.length;
 
@@ -119,7 +123,9 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<unkn
     } else if (key === '.') {
       decimalInput();
     }
-  });
+  }
+
+  useEventListener('keydown', handleKeydown);
 
   let displayEquation: string;
 
@@ -142,7 +148,7 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<unkn
           <input id="display" value={input} type="text" className="input is-large" readOnly />
         </div>
       </div>
-      <div className="level">
+      <div className="level is-mobile">
         <div className="level-left" />
         <div className="level-right">
           <div className="level-item">
@@ -150,32 +156,32 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<unkn
           </div>
         </div>
       </div>
-      <div className="level">
+      <div className="level is-mobile">
         <div className="level-item">
           <button onClick={clear} id="clear" className="button">
             AC
           </button>
         </div>
       </div>
-      <LevelWithItems>
+      <MobileLevelWithItems>
         <Digit digit={1} digitInput={digitInput} />
         <Digit digit={2} digitInput={digitInput} />
         <Digit digit={3} digitInput={digitInput} />
         <Operator mathOperator={MathOperator.Add} operatorInput={operatorInput} />
-      </LevelWithItems>
-      <LevelWithItems>
+      </MobileLevelWithItems>
+      <MobileLevelWithItems>
         <Digit digit={4} digitInput={digitInput} />
         <Digit digit={5} digitInput={digitInput} />
         <Digit digit={6} digitInput={digitInput} />
         <Operator mathOperator={MathOperator.Subtract} operatorInput={operatorInput} />
-      </LevelWithItems>
-      <LevelWithItems>
+      </MobileLevelWithItems>
+      <MobileLevelWithItems>
         <Digit digit={7} digitInput={digitInput} />
         <Digit digit={8} digitInput={digitInput} />
         <Digit digit={9} digitInput={digitInput} />
         <Operator mathOperator={MathOperator.Multiply} operatorInput={operatorInput} />
-      </LevelWithItems>
-      <LevelWithItems>
+      </MobileLevelWithItems>
+      <MobileLevelWithItems>
         <Digit digit={0} digitInput={digitInput} />
         <button className="button" onClick={decimalInput} id="decimal">
           .
@@ -184,7 +190,7 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<unkn
           =
         </button>
         <Operator mathOperator={MathOperator.Divide} operatorInput={operatorInput} />
-      </LevelWithItems>
+      </MobileLevelWithItems>
     </div>
   );
 }
