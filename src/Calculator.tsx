@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, useCallback, useMemo } from 'react';
 import useEventListener from '@srmagura/use-event-listener';
 
 import { MobileLevelWithItems } from './MobileLevelWithItems';
@@ -13,133 +13,143 @@ const maxInputLength = 13;
 const baseInputStateValue = '0';
 
 interface CalculatorProps {
-  initialInput: string;
+  initialInput: number;
 }
 
 export function Calculator({ initialInput }: CalculatorProps): ReactElement<CalculatorProps> {
-  const [input, setInput] = useState(initialInput);
+  const [input, setInput] = useState<string>(initialInput.toString());
   const [operator, setOperator] = useState<MathOperator>();
   const [prevInput, setPrevInput] = useState<string>();
 
-  function evaluate(inputOperator: MathOperator | undefined = undefined): void {
-    const inputNum = parseFloat(input);
+  const evaluate = useCallback(
+    (inputOperator: MathOperator | undefined = undefined): void => {
+      const inputNum = parseFloat(input);
 
-    if (operator !== undefined && prevInput !== undefined && !Number.isNaN(inputNum)) {
-      const prevInputNum = parseFloat(prevInput);
+      if (operator !== undefined && prevInput !== undefined && !Number.isNaN(inputNum)) {
+        const prevInputNum = parseFloat(prevInput);
 
-      if (!Number.isNaN(prevInputNum) && Number.isFinite(prevInputNum)) {
-        const result = applyOperator(operator, prevInputNum, inputNum);
+        if (!Number.isNaN(prevInputNum) && Number.isFinite(prevInputNum)) {
+          const result = applyOperator(operator, prevInputNum, inputNum);
 
-        setInput(result.toString());
-        setOperator(inputOperator);
-        setPrevInput(undefined);
-      }
-    }
-  }
-
-  function digitInput(digit: number): void {
-    if (input.length >= maxInputLength) {
-      return;
-    }
-
-    if (operator !== undefined && prevInput === undefined) {
-      setPrevInput(input);
-      setInput(digit.toString());
-    } else if (input === baseInputStateValue) {
-      setInput(digit.toString());
-    } else {
-      setInput(input + digit.toString());
-    }
-  }
-
-  function operatorInput(inputOperator: MathOperator): void {
-    if (operator === undefined) {
-      if (prevInput === undefined) {
-        setOperator(inputOperator);
-      }
-    } else if (prevInput === undefined || Number.isNaN(parseFloat(input))) {
-      if (inputOperator === MathOperator.Subtract) {
-        setPrevInput(input);
-        setInput(input.includes('-') ? '0' : '-');
-      } else if (inputOperator === MathOperator.Add) {
-        let newInput: string;
-
-        if (input.includes('-')) {
-          const substr = input.substring(1);
-
-          if (substr === '') {
-            newInput = baseInputStateValue;
-          } else {
-            newInput = substr;
-          }
-        } else {
-          newInput = input;
+          setInput(result.toString());
+          setOperator(inputOperator);
+          setPrevInput(undefined);
         }
-
-        setInput(newInput);
-        setOperator(inputOperator);
-      } else {
-        setOperator(inputOperator);
       }
-    } else {
-      evaluate(inputOperator);
-    }
-  }
+    },
+    [input, operator, prevInput],
+  );
 
-  function decimalInput(): void {
+  const digitInput = useCallback(
+    (digit: number) => {
+      if (input.length >= maxInputLength) {
+        return;
+      }
+
+      const digitStr = digit.toString();
+
+      if (operator !== undefined && prevInput === undefined) {
+        setPrevInput(input);
+        setInput(digitStr);
+      } else if (input === baseInputStateValue) {
+        setInput(digitStr);
+      } else {
+        setInput(input + digitStr);
+      }
+    },
+    [input, operator, prevInput],
+  );
+
+  const operatorInput = useCallback(
+    (inputOperator: MathOperator): void => {
+      if (operator === undefined) {
+        if (prevInput === undefined) {
+          setOperator(inputOperator);
+        }
+      } else if (prevInput === undefined || Number.isNaN(parseFloat(input))) {
+        if (inputOperator === MathOperator.Subtract) {
+          setPrevInput(input);
+          setInput(input.includes('-') ? '0' : '-');
+        } else if (inputOperator === MathOperator.Add) {
+          let newInput: string;
+
+          if (input.includes('-')) {
+            const substr = input.substring(1);
+
+            if (substr === '') {
+              newInput = baseInputStateValue;
+            } else {
+              newInput = substr;
+            }
+          } else {
+            newInput = input;
+          }
+
+          setInput(newInput);
+          setOperator(inputOperator);
+        } else {
+          setOperator(inputOperator);
+        }
+      } else {
+        evaluate(inputOperator);
+      }
+    },
+    [evaluate, input, operator, prevInput],
+  );
+
+  const decimalInput = useCallback((): void => {
     if (operator !== undefined && prevInput === undefined) {
       setPrevInput(input);
       setInput('0.');
     } else if (!input.includes('.')) {
       setInput(input + '.');
     }
-  }
+  }, [input, operator, prevInput]);
 
-  function handleClickEvaluate(): void {
-    evaluate();
-  }
-
-  function clear(): void {
+  const clear = useCallback((): void => {
     setInput(baseInputStateValue);
     setOperator(undefined);
     setPrevInput(undefined);
-  }
+  }, []);
 
-  function handleKeydown(event: KeyboardEvent): void {
-    event.preventDefault();
+  const handleKeydown = useCallback(
+    (event: KeyboardEvent): void => {
+      event.preventDefault();
 
-    const { key } = event;
+      const { key } = event;
 
-    if (key === 'Backspace' || key === 'Delete') {
-      const len = input.length;
+      if (key === 'Backspace' || key === 'Delete') {
+        const len = input.length;
 
-      if (len <= 1) {
-        setInput(baseInputStateValue);
-      } else {
-        setInput(input.substring(0, len - 1));
+        if (len <= 1) {
+          setInput(baseInputStateValue);
+        } else {
+          setInput(input.substring(0, len - 1));
+        }
+      } else if (key === '=' || key === 'Enter') {
+        evaluate();
+      } else if (key === '.') {
+        decimalInput();
       }
-    } else if (key === '=' || key === 'Enter') {
-      evaluate();
-    } else if (key === '.') {
-      decimalInput();
-    }
-  }
+    },
+    [decimalInput, evaluate, input],
+  );
 
   useEventListener('keydown', handleKeydown);
 
-  let displayEquation: string;
-
-  if (prevInput === undefined) {
-    if (operator === undefined) {
-      displayEquation = input;
+  const displayEquation = useMemo(() => {
+    if (prevInput === undefined) {
+      if (operator === undefined) {
+        return input;
+      } else {
+        return `${input} ${mathOperatorToString(operator)}`;
+      }
+    } else if (operator !== undefined) {
+      return `${prevInput} ${mathOperatorToString(operator)} ${input}`;
     } else {
-      displayEquation = `${input} ${mathOperatorToString(operator)}`;
+      return 'ERROR';
     }
-  } else if (operator !== undefined) {
-    displayEquation = `${prevInput} ${mathOperatorToString(operator)} ${input}`;
-  } else {
-    displayEquation = 'ERROR';
-  }
+  }, [input, operator, prevInput]);
 
   return (
     <div className="box" id="calculator">
@@ -186,7 +196,12 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<Calc
         <button className="button" onClick={decimalInput} id="decimal">
           .
         </button>
-        <button className="button is-info" onClick={handleClickEvaluate} id="equals">
+        <button
+          className="button is-info"
+          // @ts-ignore
+          onClick={evaluate}
+          id="equals"
+        >
           =
         </button>
         <Operator mathOperator={MathOperator.Divide} operatorInput={operatorInput} />

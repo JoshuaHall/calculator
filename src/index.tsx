@@ -8,7 +8,7 @@ import { Calculator } from './Calculator';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Calculator initialInput={'0'} />
+    <Calculator initialInput={0} />
   </React.StrictMode>,
   document.getElementById('root'),
 );

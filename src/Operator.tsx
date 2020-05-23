@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useCallback } from 'react';
 
 import useEventListener from '@srmagura/use-event-listener';
 
@@ -9,18 +9,24 @@ interface OperatorProps {
   operatorInput: (operator: MathOperator) => void;
 }
 
-export function Operator({ mathOperator, operatorInput }: OperatorProps): ReactElement<OperatorProps> {
-  function handleOperatorInput(): void {
+export const Operator = React.memo(function OperatorComponent({
+  mathOperator,
+  operatorInput,
+}: OperatorProps): ReactElement<OperatorProps> {
+  const handleOperatorInput = useCallback((): void => {
     operatorInput(mathOperator);
-  }
+  }, [mathOperator, operatorInput]);
 
-  function handleKeydown(event: KeyboardEvent): void {
-    event.preventDefault();
+  const handleKeydown = useCallback(
+    (event: KeyboardEvent): void => {
+      event.preventDefault();
 
-    if (event.key === mathOperatorToKeyString(mathOperator)) {
-      handleOperatorInput();
-    }
-  }
+      if (event.key === mathOperatorToKeyString(mathOperator)) {
+        handleOperatorInput();
+      }
+    },
+    [handleOperatorInput, mathOperator],
+  );
 
   useEventListener('keydown', handleKeydown);
 
@@ -29,4 +35,4 @@ export function Operator({ mathOperator, operatorInput }: OperatorProps): ReactE
       {mathOperatorToString(mathOperator)}
     </button>
   );
-}
+});

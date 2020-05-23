@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useCallback } from 'react';
 
 import useEventListener from '@srmagura/use-event-listener';
 
@@ -34,18 +34,21 @@ function digitToId(digit: number): string {
   }
 }
 
-export function Digit({ digit, digitInput }: DigitProps): ReactElement<DigitProps> {
-  function handleDigitInput(): void {
+export const Digit = React.memo(function DigitComponent({ digit, digitInput }: DigitProps): ReactElement<DigitProps> {
+  const handleDigitInput = useCallback((): void => {
     digitInput(digit);
-  }
+  }, [digit, digitInput]);
 
-  function handleKeydown(event: KeyboardEvent): void {
-    event.preventDefault();
+  const handleKeydown = useCallback(
+    (event: KeyboardEvent): void => {
+      event.preventDefault();
 
-    if (event.key === digit.toString()) {
-      handleDigitInput();
-    }
-  }
+      if (event.key === digit.toString()) {
+        handleDigitInput();
+      }
+    },
+    [digit, handleDigitInput],
+  );
 
   useEventListener('keydown', handleKeydown);
 
@@ -54,4 +57,4 @@ export function Digit({ digit, digitInput }: DigitProps): ReactElement<DigitProp
       {digit}
     </button>
   );
-}
+});
