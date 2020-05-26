@@ -114,11 +114,11 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<Calc
 
   const handleKeydown = useCallback(
     (event: KeyboardEvent): void => {
-      event.preventDefault();
-
       const { key } = event;
 
       if (key === 'Backspace' || key === 'Delete') {
+        event.preventDefault();
+
         const len = input.length;
 
         if (len <= 1) {
@@ -127,8 +127,10 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<Calc
           setInput(input.substring(0, len - 1));
         }
       } else if (key === '=' || key === 'Enter') {
+        event.preventDefault();
         evaluate();
       } else if (key === '.') {
+        event.preventDefault();
         decimalInput();
       }
     },

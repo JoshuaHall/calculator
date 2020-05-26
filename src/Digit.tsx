@@ -41,9 +41,8 @@ export const Digit = React.memo(function DigitComponent({ digit, digitInput }: D
 
   const handleKeydown = useCallback(
     (event: KeyboardEvent): void => {
-      event.preventDefault();
-
       if (event.key === digit.toString()) {
+        event.preventDefault();
         handleDigitInput();
       }
     },

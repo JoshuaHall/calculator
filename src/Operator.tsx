@@ -19,9 +19,8 @@ export const Operator = React.memo(function OperatorComponent({
 
   const handleKeydown = useCallback(
     (event: KeyboardEvent): void => {
-      event.preventDefault();
-
       if (event.key === mathOperatorToKeyString(mathOperator)) {
+        event.preventDefault();
         handleOperatorInput();
       }
     },
