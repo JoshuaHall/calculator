@@ -8,6 +8,10 @@ import { Operator } from './Operator';
 
 import { MathOperator, mathOperatorToString, applyOperator } from './mathOperator';
 
+function isValidNumber(num: number): boolean {
+  return !Number.isNaN(num) && Number.isFinite(num);
+}
+
 const maxInputLength = 13;
 
 const baseInputStateValue = '0';
@@ -25,10 +29,10 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<Calc
     (inputOperator: MathOperator | undefined = undefined): void => {
       const inputNum = parseFloat(input);
 
-      if (operator !== undefined && prevInput !== undefined && !Number.isNaN(inputNum)) {
+      if (operator !== undefined && prevInput !== undefined && isValidNumber(inputNum)) {
         const prevInputNum = parseFloat(prevInput);
 
-        if (!Number.isNaN(prevInputNum) && Number.isFinite(prevInputNum)) {
+        if (isValidNumber(prevInputNum)) {
           const result = applyOperator(operator, prevInputNum, inputNum);
 
           setInput(result.toString());
@@ -39,6 +43,10 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<Calc
     },
     [input, operator, prevInput],
   );
+
+  const handleClickEvaluate = useCallback(() => {
+    evaluate();
+  }, [evaluate]);
 
   const digitInput = useCallback(
     (digit: number) => {
@@ -198,12 +206,7 @@ export function Calculator({ initialInput }: CalculatorProps): ReactElement<Calc
         <button className="button" onClick={decimalInput} id="decimal">
           .
         </button>
-        <button
-          className="button is-info"
-          // @ts-ignore
-          onClick={evaluate}
-          id="equals"
-        >
+        <button className="button is-info" onClick={handleClickEvaluate} id="equals">
           =
         </button>
         <Operator mathOperator={MathOperator.Divide} operatorInput={operatorInput} />
