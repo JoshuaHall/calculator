@@ -10,7 +10,7 @@
   "dependencies": {
     "@srmagura/use-event-listener": "0.2.1",
     "bulma": "0.9.2",
-    "node-sass": "5.0.0",
+    "node-sass": "7.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-scripts": "4.0.3",
